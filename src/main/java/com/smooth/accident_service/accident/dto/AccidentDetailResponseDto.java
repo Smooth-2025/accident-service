@@ -4,14 +4,16 @@ import java.time.LocalDateTime;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.smooth.accident_service.accident.entity.AccidentSeverityType;
+
 public record AccidentDetailResponseDto(
     String accidentId,
     UserDto user,
     LocationDto location,
-    LocalDateTime occurredAt,
-    String severity,
+    LocalDateTime accidentAt,
     DecelerationDto deceleration,
-    Integer severityScore,
+    BigDecimal impulse,
+    AccidentSeverityType severity,
     EmergencyResponseDto emergencyResponse,
     List<DrivingLogDto> drivingLogs
 ) {}
@@ -28,20 +30,21 @@ record LocationDto(
 ) {}
 
 record DecelerationDto(
-    Double peak,
-    Double avg
+    Double decel,
+    Double startSpeed,
+    Double endSpeed
 ) {}
 
 record EmergencyResponseDto(
     Boolean emergencyNotified,
     Boolean familyNotified,
-    LocalDateTime reportedTime
+    LocalDateTime reportedAt
 ) {}
 
 record DrivingLogDto(
-        Double speed,
-        Double decelerationRate,
-        Boolean brakePedal,
-        Double acceleratorPedal,
-        Integer timeOffsetSeconds
+    Double speed,
+    Double decelerationRate,
+    Boolean brakePedal,
+    Boolean acceleratorPedal,
+    Integer timeOffsetSeconds
 ) {}
