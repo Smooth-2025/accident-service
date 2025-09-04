@@ -46,6 +46,10 @@ dependencies {
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // dynamoDB
+    implementation 'software.amazon.awssdk:dynamodb:2.33.0'
+    implementation 'software.amazon.awssdk:dynamodb-enhanced:2.33.0'
 }
 
 dependencyManagement {
