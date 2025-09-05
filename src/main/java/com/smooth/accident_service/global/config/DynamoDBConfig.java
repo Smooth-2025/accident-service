@@ -14,20 +14,18 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Configuration
 public class DynamoDBConfig {
 
-    @Value("${cloud.aws.region.static}")
+    @Value("${region:}")
     private String region;
 
-    @Value("${cloud.aws.credentials.access-key}")
+    @Value("${access-key}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secret-key}")
+    @Value("${secret-key}")
     private String secretKey;
 
     @Bean
@@ -50,12 +48,12 @@ public class DynamoDBConfig {
     public static class LocalDateTimeConverter implements AttributeConverter<LocalDateTime> {
         @Override
         public AttributeValue transformFrom(LocalDateTime input) {
-            return AttributeValue.builder().s(input.toInstant(ZoneOffset.UTC).toString()).build();
+            return AttributeValue.builder().s(input.toString()).build();
         }
 
         @Override
         public LocalDateTime transformTo(AttributeValue input) {
-            return LocalDateTime.ofInstant(Instant.parse(input.s()), ZoneOffset.UTC);
+            return LocalDateTime.parse(input.s());
         }
 
         @Override
