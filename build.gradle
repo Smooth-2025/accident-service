@@ -30,11 +30,6 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-    // Database & JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.mysql:mysql-connector-j'
 
     // feign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
@@ -46,6 +41,10 @@ dependencies {
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // dynamoDB
+    implementation 'software.amazon.awssdk:dynamodb:2.33.0'
+    implementation 'software.amazon.awssdk:dynamodb-enhanced:2.33.0'
 }
 
 dependencyManagement {
