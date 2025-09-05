@@ -1,6 +1,6 @@
 package com.smooth.accident_service.accident.entity;
 
-import com.smooth.accident_service.global.config.DynamoDBConfig;
+import com.smooth.accident_service.global.dynamoDb.LocalDateTimeConverter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,14 +19,21 @@ public class Accident {
 
     @NonNull
     private String accidentId;
+
     private Long vehicleId;
+
     private BigDecimal latitude;
+
     private BigDecimal longitude;
+
     @NonNull
     private LocalDateTime accidentedAt;
+
     private BigDecimal impulse;
+
     @NonNull
     private String scale;
+    
     private String drivingLog;
     
     @DynamoDbPartitionKey
@@ -41,7 +48,7 @@ public class Accident {
                 "#ID#" + accidentId;
     }
 
-    @DynamoDbConvertedBy(DynamoDBConfig.LocalDateTimeConverter.class)
+    @DynamoDbConvertedBy(LocalDateTimeConverter.class)
     public LocalDateTime getAccidentedAt() {
         return accidentedAt;
     }

@@ -12,8 +12,8 @@ import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
 @RequiredArgsConstructor
+@Repository
 public class AccidentRepository {
 
     private final DynamoDbEnhancedClient enhancedClient;
