@@ -11,9 +11,13 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 public class DrivingLog {
 
     private Double speed;
+
     private Double decelerationRate;
+
     private Boolean brakePedal;
+
     private Boolean acceleratorPedal;
+    
     private Integer timeOffsetSeconds;
 
     @DynamoDbAttribute("speed")

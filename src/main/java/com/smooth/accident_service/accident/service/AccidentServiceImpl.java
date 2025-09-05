@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.ArrayList;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class AccidentServiceImpl implements AccidentService {
 
     private final AccidentRepository accidentRepository;
