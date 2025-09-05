@@ -1,7 +1,7 @@
 package com.smooth.accident_service.accident.dto;
 
 public record UserDto(
-    String userId,
+    Long userId,
     String userName,
     Long vehicleId
 ) {}
