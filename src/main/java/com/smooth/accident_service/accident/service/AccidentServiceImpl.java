@@ -2,6 +2,7 @@ package com.smooth.accident_service.accident.service;
 
 import com.smooth.accident_service.accident.dto.*;
 import com.smooth.accident_service.accident.entity.Accident;
+import com.smooth.accident_service.accident.feign.ClientAdapter;
 import com.smooth.accident_service.accident.repository.AccidentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 public class AccidentServiceImpl implements AccidentService {
 
     private final AccidentRepository accidentRepository;
+    private final ClientAdapter clientAdapter;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -34,7 +36,7 @@ public class AccidentServiceImpl implements AccidentService {
                 convertToLocationDto(accident),
                 accident.getAccidentedAt(),
                 null,
-                null,
+                convertToEmergencyResponse(accident),
                 accident.getImpulse(),
                 accident.getScale(),
                 convertDrivingLogs(accident.getDrivingLog())
@@ -82,6 +84,11 @@ public class AccidentServiceImpl implements AccidentService {
         if (accident.getVehicleId() == null) {
             return null;
         }
-        return new UserDto(null, null, accident.getVehicleId());
+        
+        return clientAdapter.getUserInfo(accident.getVehicleId());
+    }
+    
+    private EmergencyResponseDto convertToEmergencyResponse(Accident accident) {
+        return clientAdapter.getEmergencyResponse(accident.getAccidentId());
     }
 }
