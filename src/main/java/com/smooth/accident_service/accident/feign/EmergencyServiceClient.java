@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "drivecast-service", url = "${app.client.drivecast-service.url}", path = "internal/v1/accidents")
 public interface EmergencyServiceClient {
+    
     @GetMapping("/{accidentId}/emergency")
     ApiResponse<EmergencyResponseDto> getAccidentById(@PathVariable("accidentId") String accidentId);
 }
