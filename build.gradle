@@ -31,9 +31,6 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // Database & JPA
-    implementation 'com.h2database:h2'
-
     // feign
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
