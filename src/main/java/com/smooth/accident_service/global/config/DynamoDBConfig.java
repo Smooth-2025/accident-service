@@ -2,6 +2,7 @@ package com.smooth.accident_service.global.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -11,6 +12,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @Configuration
+@ConditionalOnProperty(name = "cloud.aws.enabled", havingValue = "true", matchIfMissing = true)
 public class DynamoDBConfig {
 
     @Value("${cloud.aws.region.static}")

@@ -2,8 +2,24 @@ spring:
   application:
     name: accident-service
 
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MYSQL;DATABASE_TO_UPPER=false
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+app:
+  client:
+    user-service:
+      url: http://localhost:8081/
+    drivecast-service:
+      url: http://localhost:8080/
+
+cloud:
+  aws:
+    enabled: false
+    credentials:
+      access-key: dummy
+      secret-key: dummy
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+dynamodb:
+  table:
+    name: dummy
