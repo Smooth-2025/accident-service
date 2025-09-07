@@ -6,15 +6,20 @@ import com.smooth.accident_service.accident.feign.ClientAdapter;
 import com.smooth.accident_service.accident.repository.AccidentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.smooth.accident_service.accident.exception.AccidentErrorCode;
+import com.smooth.accident_service.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
 @RequiredArgsConstructor
 @Service
 public class AccidentServiceImpl implements AccidentService {
+
+    private static final int PAGE_SIZE = 10;
 
     private final AccidentRepository accidentRepository;
     private final ClientAdapter clientAdapter;
@@ -27,6 +32,43 @@ public class AccidentServiceImpl implements AccidentService {
                 .filter(accident -> accident != null)
                 .map(this::convertToDto)
                 .toList();
+    }
+
+    @Override
+    public AccidentPageResponseDto getAccidents(int page, LocalDate start, LocalDate end, String scale) {
+
+        List<Accident> accidents;
+
+        if (start != null && end != null && scale != null) {
+            accidents = accidentRepository.findByDateRangeAndScale(start, end, scale);
+        } else if (start != null && end != null) {
+            accidents = accidentRepository.findByDateRange(start, end);
+        } else if (scale != null) {
+            accidents = accidentRepository.findByScale(scale);
+        } else {
+            accidents = accidentRepository.findAllDesc();
+        }
+
+        List<AccidentDetailResponseDto> accidentDtos = accidents.stream()
+                .filter(accident -> accident != null)
+                .map(this::convertToDto)
+                .toList();
+
+        return applyPagination(accidentDtos, page, PAGE_SIZE);
+    }
+
+    private AccidentPageResponseDto applyPagination(List<AccidentDetailResponseDto> accidents, int page, int size) {
+
+        int start = page * size;
+        int end = Math.min(start + size, accidents.size());
+
+        if (start >= accidents.size()) {
+            throw new BusinessException(AccidentErrorCode.INVALID_PAGE_NUMBER);
+        }
+
+        List<AccidentDetailResponseDto> pageContent = accidents.subList(start, end);
+
+        return AccidentPageResponseDto.of(pageContent, page, accidents.size());
     }
 
     private AccidentDetailResponseDto convertToDto(Accident accident) {
@@ -84,7 +126,6 @@ public class AccidentServiceImpl implements AccidentService {
         if (accident.getVehicleId() == null) {
             return null;
         }
-        
         return clientAdapter.getUserInfo(accident.getVehicleId());
     }
     
