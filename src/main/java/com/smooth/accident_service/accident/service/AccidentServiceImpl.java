@@ -77,7 +77,6 @@ public class AccidentServiceImpl implements AccidentService {
                 convertToUserDto(accident),
                 convertToLocationDto(accident),
                 accident.getAccidentedAt(),
-                null,
                 convertToEmergencyResponse(accident),
                 accident.getImpulse(),
                 accident.getScale(),
@@ -131,7 +130,7 @@ public class AccidentServiceImpl implements AccidentService {
     
     private EmergencyResponseDto convertToEmergencyResponse(Accident accident) {
         if (accident.getVehicleId() == null || accident.getAccidentId().trim().isEmpty()) {
-            return null;
+            return EmergencyResponseDto.empty();
         }
         return clientAdapter.getEmergencyResponse(accident.getAccidentId());
     }
