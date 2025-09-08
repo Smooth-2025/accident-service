@@ -6,4 +6,8 @@ public record EmergencyResponseDto(
     Boolean emergencyNotified,
     Boolean familyNotified,
     LocalDateTime reportedAt
-) {}
+) {
+    public static EmergencyResponseDto empty() {
+        return new EmergencyResponseDto(null, null, null);
+    }
+}
