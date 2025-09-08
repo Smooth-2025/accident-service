@@ -40,6 +40,10 @@ public class AccidentController {
             throw new BusinessException(AccidentErrorCode.INVALID_SCALE_VALUE);
         }
 
+        if (start != null && end != null && end.isBefore(start)) {
+            throw new BusinessException(AccidentErrorCode.INVALID_DATE_RANGE);
+        }
+
         AccidentPageResponseDto responseDto = accidentService.getAccidents(page, start, end, scale);
         return ResponseEntity.ok(ApiResponse.success("사고 조회가 완료되었습니다.", responseDto));
 
