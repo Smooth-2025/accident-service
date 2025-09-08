@@ -130,6 +130,9 @@ public class AccidentServiceImpl implements AccidentService {
     }
     
     private EmergencyResponseDto convertToEmergencyResponse(Accident accident) {
+        if (accident.getVehicleId() == null || accident.getAccidentId().trim().isEmpty()) {
+            return null;
+        }
         return clientAdapter.getEmergencyResponse(accident.getAccidentId());
     }
 }
