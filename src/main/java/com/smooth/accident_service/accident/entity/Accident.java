@@ -86,7 +86,7 @@ public class Accident {
     }
 
     public void setGsi1sk(String gsi1sk) {
-        // Do nothing.
+
     }
 
     @DynamoDbSecondaryPartitionKey(indexNames = "GSI2")
@@ -94,7 +94,7 @@ public class Accident {
     public String getGsi2pk() {
         return "MONTH#" + accidentedAt.format(DateTimeFormatter.ofPattern("yyyy-MM"));
     }
-    // 👇 수정된 부분: 스캐너 인식을 위한 더미 setter 추가
+
     public void setGsi2pk(String gsi2pk) {
 
     }
