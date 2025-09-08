@@ -8,7 +8,6 @@ import com.smooth.accident_service.global.auth.AuthenticationUtils;
 import com.smooth.accident_service.global.common.ApiResponse;
 import com.smooth.accident_service.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,12 +47,13 @@ public class AccidentController {
 
 
     @GetMapping("/all")
-    public List<AccidentDetailResponseDto> getAllAccidents() {
+    public ResponseEntity<ApiResponse<List<AccidentDetailResponseDto>>> getAllAccidents() {
 
         if (!AuthenticationUtils.isAdmin()) {
             throw new BusinessException(AccidentErrorCode.ADMIN_ONLY_ACCESS);
         }
 
-        return accidentService.getAllAccidents();
+        List<AccidentDetailResponseDto> accidents = accidentService.getAllAccidents();
+        return ResponseEntity.ok(ApiResponse.success("모든 사고 조회가 완료되었습니다.", accidents));
     }
 }

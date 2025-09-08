@@ -9,7 +9,6 @@ public record AccidentDetailResponseDto(
     UserDto user,
     LocationDto location,
     LocalDateTime accidentAt,
-    DecelerationDto deceleration,
     EmergencyResponseDto emergencyResponse,
     BigDecimal impulse,
     String scale,
