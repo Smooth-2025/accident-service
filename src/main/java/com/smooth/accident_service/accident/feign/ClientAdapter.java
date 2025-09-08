@@ -29,13 +29,11 @@ public class ClientAdapter {
         try {
             ApiResponse<EmergencyResponseDto> response = emergencyServiceClient.getAccidentById(accidentId);
             if (!response.isSuccess()) {
-                throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR,
-                    "응급 정보 조회 실패: " + response.getMessage());
+                return EmergencyResponseDto.empty();
             }
-            return response.getData();
+            return response.getData() != null ? response.getData() : EmergencyResponseDto.empty();
         } catch (FeignException e) {
-            throw new BusinessException(CommonErrorCode.INTERNAL_SERVER_ERROR,
-                "외부 서비스 통신 오류");
+            return EmergencyResponseDto.empty();
         }
     }
 }
