@@ -62,6 +62,10 @@ public class AccidentServiceImpl implements AccidentService {
         int start = page * size;
         int end = Math.min(start + size, accidents.size());
 
+        if (accidents.size() == 0) {
+            return AccidentPageResponseDto.of(accidents, page, 0);
+        }
+
         if (start >= accidents.size()) {
             throw new BusinessException(AccidentErrorCode.INVALID_PAGE_NUMBER);
         }

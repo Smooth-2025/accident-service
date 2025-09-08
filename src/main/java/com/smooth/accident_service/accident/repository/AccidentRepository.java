@@ -1,8 +1,6 @@
 package com.smooth.accident_service.accident.repository;
 
 import com.smooth.accident_service.accident.entity.Accident;
-import com.smooth.accident_service.accident.exception.AccidentErrorCode;
-import com.smooth.accident_service.global.exception.BusinessException;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +10,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,26 +51,33 @@ public class AccidentRepository {
     }
 
     public List<Accident> findByDateRange(LocalDate startDate, LocalDate endDate) {
-        return startDate.datesUntil(endDate.plusDays(1))
-                .parallel()
-                .flatMap(date -> {
-                    String dateKey = "DATE#" + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                    QueryConditional queryConditional = QueryConditional
-                            .keyEqualTo(Key.builder()
-                                    .partitionValue(dateKey)
-                                    .build());
+        final String PARTITION_KEY_VALUE = "EVENTS_BY_TIMESTAMP";
 
-                    QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                            .queryConditional(queryConditional)
-                            .scanIndexForward(false)
-                            .build();
+        String startTime = "TIME#" + startDate.atStartOfDay().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        String endTime = "TIME#" + endDate.atTime(LocalTime.MAX).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
-                    return gsi1Index.query(queryRequest)
-                            .stream()
-                            .flatMap(page -> page.items().stream());
-                })
-                .collect(Collectors.toList());
+        QueryConditional queryConditional = QueryConditional.sortBetween(
+                Key.builder()
+                        .partitionValue(PARTITION_KEY_VALUE)
+                        .sortValue(startTime)
+                        .build(),
+                Key.builder()
+                        .partitionValue(PARTITION_KEY_VALUE)
+                        .sortValue(endTime)
+                        .build()
+        );
+
+        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
+                .queryConditional(queryConditional)
+                .scanIndexForward(false)
+                .build();
+
+
+        return gsi1Index.query(queryRequest)
+                .stream()
+                .flatMap(page -> page.items().stream())
+                .toList();
     }
 
     public List<Accident> findByScale(String scale) {
@@ -95,29 +101,31 @@ public class AccidentRepository {
 
     public List<Accident> findByDateRangeAndScale(LocalDate startDate, LocalDate endDate, String scale) {
 
-        return startDate.datesUntil(endDate.plusDays(1))
-                .parallel()
-                .flatMap(date -> {
-                    String dateKey = "DATE#" + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    String scalePrefix = "SCALE#" + scale;
+        String partitionKey = "SCALE#" + scale;
 
-                    QueryConditional queryConditional = QueryConditional
-                            .sortBeginsWith(
-                                    Key.builder()
-                                            .partitionValue(dateKey)
-                                            .sortValue(scalePrefix)
-                                            .build()
-                            );
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String startSortKey = "DATE#" + startDate.format(formatter);
+        String endSortKey = "DATE#" + endDate.format(formatter) + "#TIME#23:59:59";
 
-                    QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
-                            .queryConditional(queryConditional)
-                            .scanIndexForward(false)
-                            .build();
+        QueryConditional queryConditional = QueryConditional.sortBetween(
+                Key.builder()
+                        .partitionValue(partitionKey)
+                        .sortValue(startSortKey)
+                        .build(),
+                Key.builder()
+                        .partitionValue(partitionKey)
+                        .sortValue(endSortKey)
+                        .build()
+        );
 
-                    return gsi1Index.query(queryRequest)
-                            .stream()
-                            .flatMap(page -> page.items().stream());
-                })
+        QueryEnhancedRequest queryRequest = QueryEnhancedRequest.builder()
+                .queryConditional(queryConditional)
+                .scanIndexForward(false)
+                .build();
+
+        return table.query(queryRequest)
+                .stream()
+                .flatMap(page -> page.items().stream())
                 .collect(Collectors.toList());
     }
 }

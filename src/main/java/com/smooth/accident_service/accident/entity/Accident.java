@@ -71,7 +71,7 @@ public class Accident {
     @DynamoDbSecondaryPartitionKey(indexNames = "GSI1")
     @DynamoDbAttribute("GSI1PK")
     public String getGsi1pk() {
-        return "DATE#" + accidentedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return "EVENTS_BY_TIMESTAMP";
     }
 
     public void setGsi1pk(String gsi1pk) {
@@ -81,33 +81,12 @@ public class Accident {
     @DynamoDbSecondarySortKey(indexNames = "GSI1")
     @DynamoDbAttribute("GSI1SK")
     public String getGsi1sk() {
-        String timeStr = accidentedAt.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        return "SCALE#" + scale + "#TIME#" + timeStr;
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        String formattedTimestamp = accidentedAt.format(formatter);
+        return "TIME#" + formattedTimestamp;
     }
 
     public void setGsi1sk(String gsi1sk) {
-
-    }
-
-    @DynamoDbSecondaryPartitionKey(indexNames = "GSI2")
-    @DynamoDbAttribute("GSI2PK")
-    public String getGsi2pk() {
-        return "MONTH#" + accidentedAt.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-    }
-
-    public void setGsi2pk(String gsi2pk) {
-
-    }
-
-    @DynamoDbSecondarySortKey(indexNames = "GSI2")
-    @DynamoDbAttribute("GSI2SK")
-    public String getGsi2sk() {
-        String dateStr = accidentedAt.format(DateTimeFormatter.ofPattern("dd"));
-        String timeStr = accidentedAt.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        return "SCALE#" + scale + "#DATE#" + dateStr + "#TIME#" + timeStr;
-    }
-
-    public void setGsi2sk(String gsi2sk) {
 
     }
 }
