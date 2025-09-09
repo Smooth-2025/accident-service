@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: accident-service
+
+app:
+  client:
+    user-service:
+      url: http://localhost:8081/
+    drivecast-service:
+      url: http://localhost:8080/
+
+cloud:
+  aws:
+    enabled: false
+    credentials:
+      access-key: dummy
+      secret-key: dummy
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+dynamodb:
+  table:
+    name: dummy
